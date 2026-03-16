@@ -12,7 +12,7 @@ cd build/
 ```
 
 ```
-flex ../src/JIBUC.l
+flex -+ ../src/JIBUC.l
 ```
 
 ```
