@@ -8,6 +8,10 @@ for the purposes of storing and manipulating integers with interactive capabilit
 ### Compilation
 
 ```
+cd build/
+```
+
+```
 flex ../src/JIBUC.l
 ```
 
@@ -17,9 +21,8 @@ g++ lex.yy.cc -o JIBUC
 
 ### Running Lexical Analysis
 
-lexical Analysis can be ran using the 'JIBUC' binary with the "-l" or "--lexical" flags.
-This will parse the programs at the passed file paths, printing tokens and their type as 
-well as highligthing invalid tokens present in the program.
+lexical Analysis can be ran using the 'JIBUC' binary. This will parse the program piped to JIBUC,
+printing tokens and their type as well as highligthing invalid tokens present in the program.
 
 Example programs can be found in the `./example-programs` folder.
 
@@ -31,6 +34,13 @@ Example Usage:
 
 ## Dependencies
 
-OS: Arch Linux or Red Hat Linux
-Packages: Flex, Bison, cmake, make
-Language: C++
+Supported Opereating System (OS): 
+    - Arch Linux
+    - Red Hat Linux
+
+Packages:
+    - Flex
+    - Bison
+
+Language:
+    - C++
