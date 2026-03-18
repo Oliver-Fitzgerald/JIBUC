@@ -12,11 +12,11 @@ cd build/
 ```
 
 ```
-flex -+ ../src/JIBUC.l
+cmake ..
 ```
 
 ```
-g++ lex.yy.cc -o JIBUC
+make
 ```
 
 ### Running Lexical Analysis
@@ -29,7 +29,7 @@ Example programs can be found in the `./example-programs` folder.
 Example Usage:
 
 ```
-./build/JIBUC < example-programs/sample-invalid-program.jibuc
+./build/JIBUC lexical example-programs/sample-invalid-program.jibuc
 ```
 
 ## Dependencies

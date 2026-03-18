@@ -1,11 +1,49 @@
-#include "FlexLexer.h"
+/*
+ * JIBUC.cpp
+ * The entrypoint for the JIBUC compiler
+ */
+
+// Standard
 #include <vector>
+#include <cstdio>
+#include <iostream>
+#include <fstream>
+// JIBUC
 #include "Token.h"
+//#include "../build/lexer.h"
+// CLI11
+#include <CLI/CLI.hpp>
 
-int main() {
+extern Token currentToken;
+extern std::vector<std::string> tokens;
 
-    yyFlexLexer lexer;
-    Token currentToken;
+int yylex(); // Forward-declare Flex-generated functions
+void lexicalAnalysis(std::string filePath);
+
+
+int main(int argc, char** argv) {
+
+    // Initalize CLI
+    CLI::App jibuc{"A compiler for jibuc programs"};
+    jibuc.require_subcommand();
+    argv = jibuc.ensure_utf8(argv);
+
+    std::string filePath;
+    CLI::App* lexicalSubCommand = jibuc.add_subcommand("lexical", "Performs lexical analysis on a file");
+    lexicalSubCommand->add_option("filePath", filePath, "Path to file on which lexical analysis will be performed");
+    lexicalSubCommand->final_callback( [&filePath] {
+        lexicalAnalysis(filePath);
+    });
+    
+
+    CLI11_PARSE(jibuc, argc, argv);
+    return 0;
+}
+
+void lexicalAnalysis(std::string filePath) {
+
+    extern FILE* yyin;
+    yyin = fopen(filePath.c_str(), "r");
 
     printf("parsing tokens to perform lexical analysis:\n\n");
     int tok; int faults = 0;
@@ -13,16 +51,17 @@ int main() {
     std::vector<std::string> lineTokens;
     std::vector<std::string> lineValues;
 
-    while ((tok = lexer.yylex()) != 0) {
+    while ((tok = yylex()) != 0) {
 
-        if (currentToken.type == 16)
+        std::string tokenValue = tokens[currentToken.index];
+        if (tokenValue == "TOKEN_ILLEGAL")
             faults++;
         
-        lineTokens.push_back(tokenKeys[currentToken.type]);
+        lineTokens.push_back(tokenValue);
         lineValues.push_back(currentToken.value);
 
-        if (currentToken.type == 2) {
-            
+        if (tokenValue == "TOKEN_NEWLINE") {
+
             for (int i = 0; i < lineValues.size(); i++) {
                 const std::string value = lineValues[i];
                 
@@ -59,5 +98,6 @@ int main() {
         }
     }
     std::cout << "\n\033[31mNumber of illegal tokens\033[0m: " << faults << "\n";
-    return 0;
+    fclose(yyin);
+
 }
